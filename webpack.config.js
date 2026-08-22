@@ -1,28 +1,38 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+// webpack.config.js
+import path from "node:path";
+import HtmlWebpackPlugin from "html-webpack-plugin";
 
-module.exports = {
+export default {
   mode: "development",
-
   entry: "./src/index.js",
-
   output: {
-    filename: "bundle.js",
-    path: path.resolve(__dirname, "dist"),
+    filename: "main.js",
+    path: path.resolve(import.meta.dirname, "dist"),
     clean: true,
   },
-
+  devtool: "eval-source-map",
+  devServer: {
+    watchFiles: ["./src/template.html"],
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/template.html",
     }),
   ],
-
-  devServer: {
-    static: {
-      directory: path.join(__dirname, "dist"),
-    },
-    port: 8080,
-    open: true,
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.html$/i,
+        use: ["html-loader"],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
+      },
+    ],
   },
 };
